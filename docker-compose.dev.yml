@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: rlhf-postgres-dev
+    environment:
+      POSTGRES_DB: rlhf_db
+      POSTGRES_USER: rlhf_user
+      POSTGRES_PASSWORD: rlhf_password
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - rlhf-network-dev
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: rlhf-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data_dev:/data
+    networks:
+      - rlhf-network-dev
+    restart: unless-stopped
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: rlhf-backend-dev
+    environment:
+      - DATABASE_URL=postgresql://rlhf_user:rlhf_password@postgres:5432/rlhf_db
+      - REDIS_URL=redis://redis:6379
+      - MODEL_STORAGE_PATH=/app/models
+      - UPLOAD_DIR=/app/uploads
+    volumes:
+      - model_storage_dev:/app/models
+      - upload_storage_dev:/app/uploads
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - rlhf-network-dev
+    restart: unless-stopped
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  postgres_data_dev:
+  redis_data_dev:
+  model_storage_dev:
+  upload_storage_dev:
+
+networks:
+  rlhf-network-dev:
+    driver: bridge 
