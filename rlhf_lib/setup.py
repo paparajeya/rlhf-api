@@ -7,14 +7,14 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
     requirements = [line.strip() for line in fh if line.strip() and not line.startswith("#")]
 
 setup(
-    name="rlhf",
+    name="RLHF Library",
     version="0.1.0",
-    author="RLHF Team",
-    author_email="team@rlhf.com",
+    author="Dr Prashant Aparajeya",
+    author_email="p.aparajeya@aisimply.uk",
     description="A comprehensive RLHF library for training language models with human feedback",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/rlhf/rlhf-library",
+    url="https://github.com/paparajeya/rlhf-api",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -27,6 +27,8 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
